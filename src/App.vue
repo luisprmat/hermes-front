@@ -28,29 +28,38 @@
       <v-spacer></v-spacer>
 
       <v-btn
-        href="https://github.com/vuetifyjs/vuetify/releases/latest"
-        target="_blank"
+        :to="{ name: 'Home' }"
         text
+        exact
       >
-        <span class="mr-2">Latest Release</span>
-        <v-icon>open_in_new</v-icon>
+        <span class="mr-2">Inicio</span>
+        <v-icon>home</v-icon>
+      </v-btn>
+
+      <v-btn
+        :to="{ name: 'About' }"
+        text
+        exact
+      >
+        <span class="mr-2">Acerca de</span>
+        <v-icon>info</v-icon>
       </v-btn>
     </v-app-bar>
 
     <v-main>
-      <HelloWorld/>
+      <router-view />
     </v-main>
   </v-app>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld';
+import Home from './views/Home';
 
 export default {
   name: 'App',
 
   components: {
-    HelloWorld,
+    Home,
   },
 
   data: () => ({
