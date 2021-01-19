@@ -6,23 +6,17 @@
       dark
     >
       <div class="d-flex align-center">
-        <v-img
-          alt="Hermes Logo"
-          class="shrink mr-2"
-          contain
-          src="@/assets/logo_hermes.png"
-          transition="scale-transition"
-          width="40"
-        />
+        <router-link :to="{ name: 'Welcome' }">
+          <v-img
+            alt="Hermes Logo"
+            class="shrink mr-2"
+            contain
+            src="@/assets/logo_hermes.png"
+            transition="scale-transition"
+            width="40"
+          />
+        </router-link>
 
-        <!-- <v-img
-          alt="Vuetify Name"
-          class="shrink mt-1 hidden-sm-and-down"
-          contain
-          min-width="100"
-          src="https://cdn.vuetifyjs.com/images/logos/vuetify-name-dark.png"
-          width="100"
-        /> -->
         <h3>Hermes App</h3>
       </div>
 
@@ -45,6 +39,15 @@
         <span class="mr-2">Acerca de</span>
         <v-icon>info</v-icon>
       </v-btn>
+
+      <v-btn
+        :to="{ name: 'Login' }"
+        text
+        exact
+      >
+        <span class="mr-2">Login</span>
+        <v-icon>mdi-login</v-icon>
+      </v-btn>
     </v-app-bar>
 
     <v-container style="margin-top: 64px;">
@@ -56,12 +59,11 @@
 
 <script>
 // @ is an alias to /src
-import HelloWorld from '@/components/HelloWorld.vue'
 
 export default {
   name: 'Home',
   components: {
-    HelloWorld
+    //
   }
 }
 </script>

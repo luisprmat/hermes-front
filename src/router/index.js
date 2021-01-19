@@ -13,19 +13,30 @@ const routes = [
         path: '/',
         name: 'Welcome',
         components: {
-          landing: () => import(/* webpackChunkName: "welcome" */ '../components/HelloWorld')
+          landing: () => import(/* webpackChunkName: "welcome" */ '../views/landing/Welcome')
         }
       },
       {
         path: '/about',
         name: 'About',
         components: {
-          landing: () => import(/* webpackChunkName: "about" */ '../views/About')
+          landing: () => import(/* webpackChunkName: "about" */ '../views/landing/About')
+        }
+      },
+      {
+        path: '/login',
+        name: 'Login',
+        components: {
+          landing: () => import(/* webpackChunkName: "login" */ '../views/auth/Login')
         }
       }
     ]
   },
-
+  {
+    path: '/admin',
+    name: 'Admin',
+    component: () => import(/* webpackChunkName: "admin" */ '../views/admin/Admin')
+  }
 ]
 
 const router = new VueRouter({
