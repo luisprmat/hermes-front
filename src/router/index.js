@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
+import store from '../store'
 
 Vue.use(VueRouter)
 
@@ -30,12 +31,18 @@ const routes = [
           landing: () => import(/* webpackChunkName: "login" */ '../views/auth/Login')
         }
       }
-    ]
+    ],
+    meta: {
+      auth: false
+    }
   },
   {
     path: '/admin',
     name: 'Admin',
-    component: () => import(/* webpackChunkName: "admin" */ '../views/admin/Admin')
+    component: () => import(/* webpackChunkName: "admin" */ '../views/admin/Admin'),
+    meta: {
+      auth: true
+    }
   }
 ]
 
@@ -43,6 +50,19 @@ const router = new VueRouter({
   mode: 'history',
   base: process.env.BASE_URL,
   routes
+})
+
+router.beforeEach(async (to, from, next) => {
+  if (to.matched.some(route => route.meta.auth)) {
+    let auth = await store.dispatch('autoLogin')
+    if(!auth) {
+      next({ name: 'Login' })
+    } else {
+      next()
+    }
+  } else {
+    next()
+  }
 })
 
 export default router

@@ -41,7 +41,7 @@
         </v-btn>
       </form>
     </v-card-text>
-    <pre>{{ form }}</pre>
+    <!-- <pre>{{ form }}</pre> -->
   </v-card>
 </template>
 
@@ -55,6 +55,9 @@
         password: '11413115'
       },
     }),
+    beforeCreate() {
+      this.$store.dispatch('autoLogin') ? this.$router.push({ name: 'Admin' }) : false
+    },
     computed: {
       validate() {
         return !(this.form.document && this.form.password)
@@ -63,12 +66,12 @@
     methods: {
       clear() {
         this.form = {}
-        this.documentErrors = []
       },
       async login() {
         try {
           // console.log(this.form)
           let response = await this.$http.post('/api/v1/user/login', this.form)
+          this.$store.dispatch('saveToken', response.data.accessToken)
           let result = await Swal.fire({
             icon: 'success',
             title: 'Bienvenid@',
