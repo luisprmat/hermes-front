@@ -91,6 +91,7 @@
                     <v-select
                       :items="roles"
                       label="Rol"
+                      v-model="editedItem.role.id"
                       outlined
                     ></v-select>
                   </v-col>
@@ -194,7 +195,7 @@
         first_name: '',
         last_name: '',
         email: '',
-        role: 1
+        role: 3
       },
       loading: true
     }),
@@ -215,11 +216,21 @@
     },
 
     created () {
-      this.getUsers()
       this.initialize()
     },
 
     methods: {
+      async getRoles () {
+        try {
+          let response = await this.$http.get('/api/v1/role', {
+            headers: { 'token': this.$store.state.token }
+          })
+          return response.data
+        } catch (e) {
+          console.log(e.response.data)
+        }
+      },
+
       async getUsers () {
         try {
           let response = await this.$http.get('/api/v1/user', {
@@ -232,39 +243,38 @@
       },
 
       async initialize () {
+        let roles = await this.getRoles()
+        this.roles = roles.map(item => {
+          return { value: item.id, text: item.title }
+        })
         this.users = await this.getUsers()
         this.loading = false
-        this.roles = ['Admin', 'Editor']
-        //   {
-        //     id: 1,
-        //     name: 'Admin'
-        //   },
-        //   {
-        //     id: 2,
-        //     name: 'Editor'
-        //   }
-        // ]
       },
 
       editItem (item) {
-        this.editedIndex = this.users.indexOf(item)
-        console.log(this.editedIndex)
+        this.editedIndex = item.id
         this.editedItem = Object.assign({}, item)
-        console.log('Edited', this.editedItem)
         this.dialog = true
       },
 
       deleteItem (item) {
-        this.editedIndex = this.users.indexOf(item)
-        console.log(this.editedIndex)
+        this.editedIndex = item.id
         this.editedItem = Object.assign({}, item)
-        console.log('Deleted', this.editedItem)
         this.dialogDelete = true
       },
 
-      deleteItemConfirm () {
-        this.users.splice(this.editedIndex, 1)
-        this.closeDelete()
+      async deleteItemConfirm () {
+        try {
+          let response = await this.$http.delete(`/api/v1/user/${this.editedIndex}`, {
+            headers: { 'token': this.$store.state.token }
+          })
+          console.log(response.data)
+          this.closeDelete()
+          this.initialize()
+        } catch (e) {
+          console.log(e.response.data)
+        }
+        console.log('Deleted index', this.editedIndex)
       },
 
       close () {
