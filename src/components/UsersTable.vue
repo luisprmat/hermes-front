@@ -201,6 +201,7 @@
         first_name: '',
         last_name: '',
         email: '',
+        password: '',
         role: 3
       },
       defaultItem: {
@@ -240,7 +241,10 @@
           })
           return response.data
         } catch (e) {
-          console.log(e.response.data)
+          if(e.response.status === 401) {
+            console.log(e.response.data)
+            this.$store.dispatch('logout')
+          }
         }
       },
 
@@ -251,7 +255,10 @@
           })
           return response.data
         } catch (e) {
-          console.log(e.response.data)
+          if(e.response.status === 401) {
+            console.log(e.response.data)
+            this.$store.dispatch('logout')
+          }
         }
       },
 
@@ -264,7 +271,6 @@
       editItem (item) {
         this.editedIndex = item.id
         this.editedItem = Object.assign({}, item)
-        console.log('Edited item', this.editedItem)
         this.dialog = true
       },
 
@@ -283,7 +289,10 @@
           this.closeDelete()
           this.initialize()
         } catch (e) {
-          console.log(e.response.data)
+          if(e.response.status === 401) {
+            console.log(e.response.data)
+            this.$store.dispatch('logout')
+          }
         }
       },
 
@@ -318,7 +327,10 @@
             this.close()
             this.initialize()
           } catch (e) {
-            console.log(e.response.data)
+            if(e.response.status === 401) {
+              console.log(e.response.data)
+              this.$store.dispatch('logout')
+            }
           }
         }
         this.close()
