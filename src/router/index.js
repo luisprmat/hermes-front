@@ -39,10 +39,20 @@ const routes = [
   {
     path: '/admin',
     name: 'Admin',
-    component: () => import(/* webpackChunkName: "admin" */ '../views/admin/Admin'),
+    component: () => import(/* webpackChunkName: "admin" */ '../views/Admin'),
     meta: {
       auth: true
-    }
+    },
+    children: [
+      {
+        path: 'users',
+        name: 'Users',
+        component: () => import(/* webpackChunkName: "users" */ '../views/admin/Users'),
+        meta: {
+          auth: true
+        }
+      }
+    ]
   }
 ]
 
