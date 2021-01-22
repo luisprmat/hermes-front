@@ -79,6 +79,17 @@
                   <v-col
                     cols="12"
                     sm="12"
+                    md="12"
+                  >
+                    <v-text-field
+                      v-model="editedItem.password"
+                      label="Contraseña"
+                      outlined
+                    ></v-text-field>
+                  </v-col>
+                  <v-col
+                    cols="12"
+                    sm="12"
                     md="6"
                   >
                     <v-text-field
@@ -91,7 +102,9 @@
                     <v-select
                       :items="roles"
                       label="Rol"
-                      v-model="editedItem.role.id"
+                      v-model="editedItem.role"
+                      item-text="title"
+                      item-value="id"
                       outlined
                     ></v-select>
                   </v-col>
@@ -188,7 +201,7 @@
         first_name: '',
         last_name: '',
         email: '',
-        role: 1
+        role: 3
       },
       defaultItem: {
         document: '',
@@ -243,10 +256,7 @@
       },
 
       async initialize () {
-        let roles = await this.getRoles()
-        this.roles = roles.map(item => {
-          return { value: item.id, text: item.title }
-        })
+        this.roles = await this.getRoles()
         this.users = await this.getUsers()
         this.loading = false
       },
@@ -254,6 +264,7 @@
       editItem (item) {
         this.editedIndex = item.id
         this.editedItem = Object.assign({}, item)
+        console.log('Edited item', this.editedItem)
         this.dialog = true
       },
 
@@ -274,7 +285,6 @@
         } catch (e) {
           console.log(e.response.data)
         }
-        console.log('Deleted index', this.editedIndex)
       },
 
       close () {
@@ -293,11 +303,23 @@
         })
       },
 
-      save () {
-        if (this.editedIndex > -1) {
+      async save () {
+        if (this.editedIndex > -1) { // Case: Edit User
           Object.assign(this.users[this.editedIndex], this.editedItem)
-        } else {
-          this.users.push(this.editedItem)
+        } else { // Case: New User
+          try {
+            let newItem = Object.assign({}, this.editedItem)
+            newItem.roleId = this.editedItem.role
+            delete newItem.role
+            let response = await this.$http.post(`/api/v1/user`, newItem, {
+              headers: { 'token': this.$store.state.token }
+            })
+            console.log(response.data)
+            this.close()
+            this.initialize()
+          } catch (e) {
+            console.log(e.response.data)
+          }
         }
         this.close()
       },
