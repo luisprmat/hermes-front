@@ -202,14 +202,17 @@
         last_name: '',
         email: '',
         password: '',
-        role: 3
+        role: 3,
+        roleId: 3
       },
       defaultItem: {
         document: '',
         first_name: '',
         last_name: '',
         email: '',
-        role: 3
+        password: '',
+        role: 3,
+        roleId: 3
       },
       loading: true
     }),
@@ -314,7 +317,41 @@
 
       async save () {
         if (this.editedIndex > -1) { // Case: Edit User
-          Object.assign(this.users[this.editedIndex], this.editedItem)
+          try {
+            this.editedItem = Object.assign({}, this.defaultItem, this.editedItem)
+            const id = this.editedItem.id
+            if (typeof(this.editedItem.role) !== 'number') { // If role is unchanged
+              this.editedItem.roleId = this.editedItem.role.id
+            } else { // Role is changed
+              this.editedItem.roleId = this.editedItem.role
+            }
+
+            // Don't send a empty password
+            if(this.editedItem.password.trim() === '') {
+              delete this.editedItem.password
+            }
+
+            delete this.editedItem.id
+            delete this.editedItem.role
+            console.log('Item a editar', this.editedItem)
+            console.log('role[id]', this.editedItem.role)
+            let response = await this.$http.put(`/api/v1/user/${id}`, this.editedItem, {
+              headers: { 'token': this.$store.state.token }
+            })
+            console.log(response.data)
+            this.close()
+            this.initialize()
+          } catch (e) {
+            if(e.response) {
+              if(e.response.status === 401) {
+                console.log(e.response.data)
+                this.$store.dispatch('logout')
+              } else {
+                console.log(e.response.data)
+              }
+            }
+            console.log('Error -> ', e)
+          }
         } else { // Case: New User
           try {
             let newItem = Object.assign({}, this.editedItem)
