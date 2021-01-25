@@ -56,7 +56,7 @@
       },
     }),
     beforeCreate() {
-      this.$store.dispatch('autoLogin') ? this.$router.push({ name: 'Admin' }) : false
+      this.$store.dispatch('autoLogin') ? this.$router.push({ name: 'Admin' }).catch(() => {}) : false
     },
     computed: {
       validate() {

@@ -334,7 +334,6 @@
             delete this.editedItem.id
             delete this.editedItem.role
             console.log('Item a editar', this.editedItem)
-            console.log('role[id]', this.editedItem.role)
             let response = await this.$http.put(`/api/v1/user/${id}`, this.editedItem, {
               headers: { 'token': this.$store.state.token }
             })

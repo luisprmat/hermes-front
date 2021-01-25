@@ -65,7 +65,7 @@ const router = new VueRouter({
 router.beforeEach(async (to, from, next) => {
   if (to.matched.some(route => route.meta.auth)) {
     let auth = await store.dispatch('autoLogin')
-    if(!auth) {
+    if(to.name !== 'Login' && !auth) {
       next({ name: 'Login' })
     } else {
       next()
